@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "first_step_app",
+    "slug": "first_step_app",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "first_step_app"
+}
