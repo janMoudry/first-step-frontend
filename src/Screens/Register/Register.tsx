@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import defaultStyles from "./Register.style";
 import appManager from "../../useLogic/apiCalls";
 import deviceInfoModule from "react-native-device-info";
+import { logIn } from "../../Storage/storage";
 
 const Register = () => {
   const navigation = useNavigation();
@@ -44,8 +45,10 @@ const Register = () => {
     setLoad(false);
     const phoneId = deviceInfoModule.getAndroidId();
     const data = await appManager.register(phoneId, email, password);
+    console.log(data.data);
 
     if (data.error === 200) {
+      await logIn(email, password, false);
       navigation.navigate("EditProfile");
     }
     setLoad(true);

@@ -1,3 +1,4 @@
+import { EditProfile } from "../Types/requestTypes";
 import useApiCall from "./useApiCall";
 
 const appManager = {
@@ -16,11 +17,7 @@ const appManager = {
   },
 
   images: (): string => {
-    try {
-      return `http://192.168.1.75:3001/image`;
-    } catch (err) {
-      console.log(err);
-    }
+    return `http://192.168.0.139:3001/image`;
   },
   login: async (phoneId: string, email: string, password: string) => {
     const url = `/login`;
@@ -33,13 +30,9 @@ const appManager = {
 
     return !!data ? data : null;
   },
-  updateLocation: async (phoneId, latitude, longitude) => {
+  updateLocation: async (locationData) => {
     const url = `/updateLocation`;
-    const reqParams = {
-      phoneId: phoneId,
-      latitude: latitude,
-      longitude: longitude,
-    };
+    const reqParams = locationData;
     const data = await useApiCall(url, reqParams);
     return data;
   },
@@ -58,6 +51,21 @@ const appManager = {
       email: email,
       password: password,
     };
+    const data = await useApiCall(url, reqParams);
+
+    return data;
+  },
+  editProfile: async (userData: {
+    phoneId: string;
+    name: string;
+    midllename: string;
+    surname: string;
+    birth: string;
+    description: string;
+    hobbies: Array<string>;
+  }) => {
+    const url = `/editProfile`;
+    const reqParams = userData;
     const data = await useApiCall(url, reqParams);
 
     return data;

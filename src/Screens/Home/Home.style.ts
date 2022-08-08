@@ -20,6 +20,10 @@ const fileStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  cardContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+  },
 });
 
 export default fileStyles;

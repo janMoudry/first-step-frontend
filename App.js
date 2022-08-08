@@ -8,8 +8,6 @@ import deviceInfoModule from "react-native-device-info";
 import { setLanguageFoTexts } from "./src/Storage/getText";
 import getAllPermission from "./permissionDialogs";
 import AppLoading from "./src/Screens/AppLoading";
-import axios from "axios";
-import GetLocation from "react-native-get-location";
 
 const App = () => {
   const [isBluUnable, setBluUnable] = useState(false);
@@ -50,7 +48,6 @@ const App = () => {
         if (isAvaiable && isEnabled) {
           setBluUnable(true);
         } else {
-          setBluUnable(false);
           RNBluetoothClassic.requestBluetoothEnabled();
         }
         clearTimeout(timeout);
@@ -59,23 +56,6 @@ const App = () => {
 
     setBluetooth();
   }, []);
-  // useEffect(() => {
-  //   intervalForUpdateLocation.current = setInterval(async () => {
-  //     const currentLocation = await GetLocation.getCurrentPosition({
-  //       enableHighAccuracy: true,
-  //       timeout: 15000,
-  //     });
-  //     if (phoneId !== null) {
-  //       await axios.get(
-  //         `http://192.168.0.139:3001/updateLocation/${phoneId}/${currentLocation.latitude}/${currentLocation.longitude}`,
-  //       );
-  //     }
-  //   }, 10000);
-
-  //   return () => {
-  //     clearInterval(intervalForUpdateLocation.current);
-  //   };
-  // }, []);
 
   RNBluetoothClassic.onBluetoothDisabled(() => {
     setBluUnable(false);
@@ -86,9 +66,7 @@ const App = () => {
   });
   return isBluUnable ? (
     isLoad ? (
-      <>
-        <FirstStep_app />
-      </>
+      <FirstStep_app />
     ) : (
       <Text> App is loading </Text>
     )

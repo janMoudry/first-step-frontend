@@ -12,6 +12,7 @@ const UploadImage = ({ image, setImage, setImageToSave, setShowCamera }) => {
         alignSelf: "center",
         marginTop: 20,
         overflow: "hidden",
+        borderWidth: 1,
       }}
       onPress={() => setShowCamera(true)}
     >
@@ -30,6 +31,9 @@ const UploadImage = ({ image, setImage, setImageToSave, setShowCamera }) => {
             width: "100%",
             alignItems: "center",
             paddingVertical: 10,
+            borderWidth: 1,
+            borderRadius: 100,
+            borderBottomWidth: 0,
           }}
         >
           <Text style={{ color: colors.textMain }}> Nahrát fotku </Text>

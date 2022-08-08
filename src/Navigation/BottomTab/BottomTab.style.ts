@@ -5,14 +5,22 @@ const defaultStyles = StyleSheet.create({
   container: {
     flexDirection: "row",
     height: 50,
+    borderTopWidth: 1,
   },
   innerContainer: {
     borderBottomWidth: 0,
-    width: "33.33333%",
+    flex: 1,
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: colors.backgroundMain,
+  },
+  innerContainerFocus: {
+    borderBottomWidth: 0,
+    flex: 1,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

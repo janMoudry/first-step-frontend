@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { SetStateAction, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -12,8 +12,17 @@ import { getAge } from "../../../../useLogic/generalLogic";
 import appManager from "../../../../useLogic/apiCalls";
 import ProfilModal from "./ProfilCardModal";
 
-const ProfilCard = ({ phoneId, setDoneScanning }) => {
-  const [userData, setUserData] = useState({});
+const ProfilCard = ({
+  phoneId,
+  setDoneScanning,
+}: {
+  phoneId: string;
+  setDoneScanning: React.Dispatch<SetStateAction<boolean>>;
+}) => {
+  const [userData, setUserData] = useState<{
+    name: string;
+    birth: string;
+  } | null>(null);
   const [isLoad, setLoad] = useState(false);
 
   const [isModalShow, setModalShow] = useState(false);
@@ -22,9 +31,10 @@ const ProfilCard = ({ phoneId, setDoneScanning }) => {
     const fetch = async () => {
       try {
         const data = await appManager.fetchUserDataByPhoneId(phoneId);
+        console.log(data);
 
-        data?.data
-          ? (setUserData(data.data), setDoneScanning(false), setLoad(true))
+        data
+          ? (setUserData(data), setDoneScanning(false), setLoad(true))
           : null;
       } catch (err) {
         console.log(err);
@@ -37,7 +47,7 @@ const ProfilCard = ({ phoneId, setDoneScanning }) => {
   return (
     <>
       <View>
-        {isLoad ? (
+        {isLoad && userData ? (
           <TouchableOpacity
             style={{
               width: 150,
@@ -55,7 +65,7 @@ const ProfilCard = ({ phoneId, setDoneScanning }) => {
                 marginTop: -10,
               }}
               source={{
-                uri: appManager.images("image", true),
+                uri: appManager.images(),
               }}
             />
             <Text

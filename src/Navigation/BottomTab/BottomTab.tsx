@@ -19,7 +19,11 @@ const NavigationTab = ({ state, description, navigation }) => {
       {state.routes.map((screen) => (
         <TouchableOpacity
           key={screen.key}
-          style={defaultStyles.innerContainer}
+          style={
+            screen.name === currentScreen.name
+              ? defaultStyles.innerContainerFocus
+              : defaultStyles.innerContainer
+          }
           onPress={() =>
             screen.name !== currentScreen.name &&
             (navigation.navigate(screen.name), setCurrentScreen(screen))
@@ -29,6 +33,7 @@ const NavigationTab = ({ state, description, navigation }) => {
             name={getIconByScreen(screen.name)}
             size={screen.name === currentScreen.name ? 25 : 30}
             color={colors.textMain}
+            style={{ backgroundColor: "transparent" }}
           />
           {screen.name === currentScreen.name && (
             <Hr marginTop={5} size={5} width={30} color={colors.textMain} />

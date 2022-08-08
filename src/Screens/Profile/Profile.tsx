@@ -1,6 +1,6 @@
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
-  Text,
   ActivityIndicator,
   Image,
   ScrollView,
@@ -8,12 +8,13 @@ import {
   Dimensions,
 } from "react-native";
 import { colors, fontFamilies } from "../../Theme/Theme";
-import { useEffect, useLayoutEffect, useState } from "react";
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import BasicInfo from "./components/BasicInfo";
 import HobbiesAndLinks from "./components/HobbiesAndLinks";
 import appManager from "../../useLogic/apiCalls";
+import deviceInfoModule from "react-native-device-info";
+import { getAge } from "../../useLogic/generalLogic";
 
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState<{
@@ -32,25 +33,13 @@ const Profile = ({ navigation }) => {
 
   useEffect(() => {
     const fetch = async () => {
-      const data = await appManager.fetchUserDataByPhoneId("D8:0B:9A:20:45:47");
+      const phoneId = await deviceInfoModule.getAndroidId();
+      const data = await appManager.fetchUserDataByPhoneId(phoneId);
       setUserData(data);
       setLoad(true);
     };
     fetch();
     return () => {};
-  }, []);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity
-          style={{ alignSelf: "flex-end" }}
-          onPress={() => alert("go to edit screen")}
-        >
-          <Icon name="edit" size={30} color={colors.textMain} />
-        </TouchableOpacity>
-      ),
-    });
   }, []);
 
   return (
@@ -77,7 +66,7 @@ const Profile = ({ navigation }) => {
                 height: Dimensions.get("screen").height / 2,
               }}
               source={{
-                uri: appManager.images("image", true),
+                uri: appManager.images(),
               }}
             />
             <View
@@ -97,10 +86,7 @@ const Profile = ({ navigation }) => {
                 age={getAge(userData.birth)}
                 description={userData.description}
               />
-              <HobbiesAndLinks
-                hobbies={userData.hobbies}
-                links={userData.links}
-              />
+              <HobbiesAndLinks hobbies={userData.hobbies} />
             </View>
           </View>
         ) : (
@@ -112,26 +98,3 @@ const Profile = ({ navigation }) => {
 };
 
 export default Profile;
-
-const getAge = (birth: string): string => {
-  const userYear = parseInt(birth.slice(6, 10));
-  const userMonth = parseInt(birth.slice(3, 5));
-  const userDay = parseInt(birth.slice(0, 2));
-
-  const currentDate = new Date();
-  const currentYear = currentDate.getFullYear();
-  const currentMonth = currentDate.getMonth() + 1;
-  const currentDay = currentDate.getDate();
-
-  let age = currentYear - userYear;
-
-  if (currentMonth < userMonth) {
-    age--;
-  } else if (currentMonth === userMonth) {
-    if (currentDay > userDay) {
-      age--;
-    }
-  }
-
-  return age.toString();
-};

@@ -33,6 +33,8 @@ target 'firststepfrontend' do
   #   use_flipper!()
   # end
 
+  pod 'RNBackgroundFetch', :path => '../node_modules/react-native-background-fetch'
+
   post_install do |installer|
     react_native_post_install(installer)
     __apply_Xcode_12_5_M1_post_install_workaround(installer)

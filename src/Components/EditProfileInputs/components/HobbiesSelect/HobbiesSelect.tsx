@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Modal,
   StyleSheet,
@@ -22,6 +22,7 @@ const HobbiesSelect = ({ label, onChange }) => {
           flexDirection: "column",
           justifyContent: "space-between",
           width: 300,
+          alignSelf: "center",
         }}
       >
         <TouchableOpacity
@@ -63,11 +64,13 @@ const HobbiesSelect = ({ label, onChange }) => {
                 onPress={() => {
                   if (hobbiesArray.length === 1) {
                     sethobbiesArray([]);
+                    onChange([]);
                   } else {
                     const arrayAfterDetele = hobbiesArray.filter(
                       (hobby) => hobby !== item,
                     );
                     sethobbiesArray(arrayAfterDetele);
+                    onChange(arrayAfterDetele);
                   }
                 }}
               >
@@ -83,6 +86,7 @@ const HobbiesSelect = ({ label, onChange }) => {
           closeModal={() => setModalVisible(false)}
           sethobbiesArray={sethobbiesArray}
           hobbiesArray={hobbiesArray}
+          onChange={onChange}
         />
       )}
     </View>
@@ -95,11 +99,12 @@ const SelectHobbiesModal = ({
   closeModal,
   sethobbiesArray,
   hobbiesArray,
+  onChange,
 }) => {
   const inputModalRef = useRef(null);
   useEffect(() => {
     setTimeout(() => {
-      inputModalRef.current.focus();
+      inputModalRef.current && inputModalRef.current.focus();
     }, 100);
   }, []);
 
@@ -155,6 +160,7 @@ const SelectHobbiesModal = ({
           onPress={() => {
             if (inputedText.length > 3) {
               sethobbiesArray([...hobbiesArray, inputedText]);
+              onChange([...hobbiesArray, inputedText]);
               closeModal();
             }
           }}

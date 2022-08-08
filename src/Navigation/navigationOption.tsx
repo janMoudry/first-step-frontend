@@ -1,3 +1,4 @@
+import React from "react";
 import { Modal, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/SimpleLineIcons";
 import { getText } from "../Storage/getText";
@@ -102,6 +103,14 @@ export const ProfileOption = ({ navigation }) => ({
       >
         {getText("COMMON.BACK")}
       </Text>
+    </TouchableOpacity>
+  ),
+  headerRight: () => (
+    <TouchableOpacity
+      style={{ alignSelf: "flex-end" }}
+      onPress={() => navigation.navigate("EditProfile", { isNew: false })}
+    >
+      <Icon name="note" size={30} color={colors.textMain} />
     </TouchableOpacity>
   ),
 });

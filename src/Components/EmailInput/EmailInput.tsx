@@ -23,8 +23,6 @@ const EmailInput = ({
 
   const [inputRef, setInputFocus] = useFocus();
 
-  const checkIcon = <Icon name="check" size={20} color="green" />;
-
   useEffect(() => {
     onChange(inputedText);
 
@@ -38,19 +36,6 @@ const EmailInput = ({
       setFilled(false);
     }
   }, [inputedText]);
-
-  const crossIcon = (
-    <Icon
-      name="plus"
-      size={20}
-      color="pink"
-      style={{
-        transform: [{ rotate: "45deg" }],
-        left: -0.5,
-        top: 0.5,
-      }}
-    />
-  );
 
   return (
     <View

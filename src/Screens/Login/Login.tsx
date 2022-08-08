@@ -1,14 +1,16 @@
+import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+
 import { colors, fontFamilies } from "../../Theme/Theme";
-import BasicInput from "../../Components/BasicInput";
 import PasswordInput from "../../Components/PasswordInput";
 import CheckButton from "../../Components/CheckButton";
-import { useEffect, useState } from "react";
 import appManager from "../../useLogic/apiCalls";
 import { logIn } from "../../Storage/storage";
 import Icon from "react-native-vector-icons/AntDesign";
 import { useNavigation } from "@react-navigation/native";
 import Toast from "react-native-toast-message";
+import EmailInput from "../../Components/EmailInput";
+import { updatingLocation } from "../../useLogic/generalLogic";
 
 const Login = () => {
   const navigation = useNavigation();
@@ -51,6 +53,7 @@ const Login = () => {
 
       if (loginRight?.shouldLogin) {
         await logIn(username, password, stayLoggedCheck);
+        updatingLocation();
         navigation.navigate("Home");
         clearTimeout(timeout);
       } else if (loginRight?.data) {
@@ -148,10 +151,11 @@ const Login = () => {
           >
             Login
           </Text>
-          <BasicInput
+          <EmailInput
             name="name"
-            label="Přihlašovací jméno"
+            label="E-mail"
             onChange={setUsername}
+            setFilled={() => {}}
           />
           <PasswordInput name="password" label="Heslo" onChange={setPassword} />
           <CheckButton

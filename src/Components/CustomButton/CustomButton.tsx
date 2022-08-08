@@ -25,6 +25,7 @@ const CustomButton = ({
         justifyContent: "center",
         alignItems: "center",
         marginVertical: 15,
+        alignSelf: "center",
       }}
       onPress={onPress}
     >
@@ -50,7 +51,6 @@ const CustomButton = ({
         justifyContent: "center",
         alignItems: "center",
       }}
-      onPress={onPress}
     >
       <Text
         style={{

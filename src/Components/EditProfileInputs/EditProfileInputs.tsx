@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "react-native";
 import BasicInput from "./components/BasicInput";
 import CustomDatePicker from "./components/DatePicker";
@@ -9,7 +10,7 @@ const EditProfileInputs = ({ type, onChange, label }) => {
     case "basic":
       return <BasicInput label={label} onChange={onChange} />;
     case "datePicker":
-      return <CustomDatePicker label={label} onChange={() => {}} />;
+      return <CustomDatePicker label={label} onChange={onChange} />;
     case "description":
       return <DescriptionInput label={label} onChange={onChange} />;
     case "hobbies":

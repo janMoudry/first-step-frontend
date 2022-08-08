@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { fontFamilies } from "../../../../Theme/Theme";
@@ -10,13 +10,14 @@ const BasicInput = ({ label, onChange }) => {
   return (
     <TouchableOpacity
       style={{
-        minWidth: 300,
+        width: 300,
         height: 50,
         borderWidth: 1,
         marginVertical: 10,
         justifyContent: "center",
         padding: 5,
         borderRadius: 10,
+        alignSelf: "center",
       }}
     >
       {!isInputFocused && (
@@ -40,6 +41,7 @@ const BasicInput = ({ label, onChange }) => {
         }
         onChangeText={(text) => {
           setInputedText(text);
+          onChange(text);
         }}
       />
     </TouchableOpacity>

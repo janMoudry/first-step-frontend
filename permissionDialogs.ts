@@ -1,6 +1,7 @@
-import { Permission, PermissionsAndroid } from "react-native";
+import React from "react";
+import { Permission, PermissionsAndroid, Platform } from "react-native";
 import { check, PERMISSIONS, RESULTS, request } from "react-native-permissions";
-import { Platform } from "react-native";
+import * as Notifications from "expo-notifications";
 
 const permissionDialogs = {
   CAMERA: async () => {
@@ -173,14 +174,16 @@ const permissionDialogs = {
       }, 1000);
     });
   },
+  registerForPushNotificationsAsync: async () => {
+   Notifications
+  },
 };
 
 const getAllPermission = async () => {
-  await permissionDialogs.BLUETOOTH_CONNECT();
   await permissionDialogs.BLUETOOTH_ADVERTISE();
   await permissionDialogs.ACCESS_FINE_LOCATION();
-  await permissionDialogs.BLUETOOTH_SCAN();
   await permissionDialogs.CAMERA();
+  await permissionDialogs.registerForPushNotificationsAsync();
 };
 
 export default getAllPermission;

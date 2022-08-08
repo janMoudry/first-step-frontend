@@ -5,6 +5,7 @@ import CustomButton from "../../../../Components/CustomButton";
 import { isLoged } from "../../../../Storage/storage";
 import { fontFamilies } from "../../../../Theme/Theme";
 import appManager from "../../../../useLogic/apiCalls";
+import { updatingLocation } from "../../../../useLogic/generalLogic";
 
 const WelcomeBackModal = () => {
   const navigation = useNavigation();
@@ -34,6 +35,7 @@ const WelcomeBackModal = () => {
       );
 
       if (loginRight) {
+        updatingLocation();
         setModalShow(false);
       }
     } catch (err) {

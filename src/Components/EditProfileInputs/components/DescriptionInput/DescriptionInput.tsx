@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import React, { useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,7 +13,7 @@ const DescriptionInput = ({ onChange, label }) => {
   const inputRef = useRef(null);
 
   return (
-    <View style={{ width: 300, marginVertical: 10 }}>
+    <View style={{ width: 300, marginVertical: 10, alignSelf: "center" }}>
       <View
         style={{
           flexDirection: "row",
@@ -26,7 +26,7 @@ const DescriptionInput = ({ onChange, label }) => {
         <Icon name="pencil" size={20} />
       </View>
       <TouchableOpacity
-        onPress={() => inputRef.current.focus()}
+        onPress={() => inputRef.current && inputRef.current.focus()}
         style={{
           width: 300,
           height: 100,
@@ -41,7 +41,7 @@ const DescriptionInput = ({ onChange, label }) => {
           multiline
           maxLength={150}
           placeholder="max 150 znaků..."
-          onChange={onChange}
+          onChangeText={(e) => onChange(e)}
         />
       </TouchableOpacity>
     </View>

@@ -1,20 +1,25 @@
-import { View, Text } from "react-native";
+import { View, Text, AppState } from "react-native";
 
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ScanButton from "../../Components/ScanButton";
 import appManager from "../../useLogic/apiCalls";
 import fileStyles from "./Home.style";
 import WelcomeBackModal from "./components/WelcomeBackModal";
-import GetLocation from "react-native-get-location";
+import ProfileCard from "./components/ProfilCard";
 import deviceInfoModule from "react-native-device-info";
 import Toast from "react-native-toast-message";
+import { handleAppStateChange } from "../../useLogic/generalLogic";
+import BackgroundFetch from "react-native-background-fetch";
 
 const Home = () => {
   const [isScanning, setScanning] = useState(false);
   const [doneScanning, setDoneScanning] = useState(false);
   const [isFirstScan, setFirstScan] = useState(true);
+  const [event, setEvent] = useState([]);
 
-  const [arrayOfIds, setArrayOfIds] = useState([]);
+  const [arrayOfIds, setArrayOfIds] = useState<
+    Array<{ _id: string; phoneId: string; error: number }>
+  >([]);
 
   const showToast = () => {
     Toast.show({
@@ -24,28 +29,25 @@ const Home = () => {
     });
   };
 
+  useEffect(() => {
+    AppState.addEventListener("change", handleAppStateChange);
+  }, []);
+
   const startScanForPhone = async () => {
     setScanning(true);
     try {
-      const currentLocation = await GetLocation.getCurrentPosition({
-        enableHighAccuracy: true,
-        timeout: 15000,
-      });
-      const phoneId = deviceInfoModule.getAndroidId();
-      await appManager.updateLocation(
-        phoneId,
-        currentLocation.latitude,
-        currentLocation.longitude,
-      );
+      const phoneId = await deviceInfoModule.getAndroidId();
 
-      const deviceInLocation = await appManager.findDevicesInLocation(phoneId);
+      const deviceInLocation = await appManager.findDevicesInLocation(phoneId); //+token
+
+      console.log(deviceInLocation);
+
       if (deviceInLocation?.error === 404) {
         showToast();
       }
       setArrayOfIds(deviceInLocation);
       setDoneScanning(true);
-      setTimeout(() => setDoneScanning(false), 5000);
-      setScanning(false);
+      +setScanning(false);
       setFirstScan(false);
     } catch (err) {
       console.log(err);
@@ -54,18 +56,20 @@ const Home = () => {
 
   return (
     <View style={fileStyles.container}>
-      {!isScanning
-        ? arrayOfIds?.error !== 404 &&
-          arrayOfIds.map((item) => {
-            return (
-              <Text key={item.phoneId}>
-                {item.phoneId}
-                {item.latitude}
-                {item.longitude}
-              </Text>
-            );
-          })
-        : null}
+      <View style={fileStyles.cardContainer}>
+        {!isScanning
+          ? arrayOfIds?.error !== 404 &&
+            arrayOfIds.map((item) => {
+              return (
+                <ProfileCard
+                  key={item._id}
+                  setDoneScanning={setDoneScanning}
+                  phoneId={item.phoneId}
+                />
+              );
+            })
+          : null}
+      </View>
 
       <View style={fileStyles.buttonContainer}>
         <ScanButton
