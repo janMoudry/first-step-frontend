@@ -1,8 +1,9 @@
+import React from "react";
 import { ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import { colors } from "../../../../Theme/Theme";
 
-const UploadImage = ({ image, setImage, setImageToSave, setShowCamera }) => {
+const UploadImage = ({ image, showModal }) => {
   return (
     <TouchableOpacity
       style={{
@@ -14,9 +15,9 @@ const UploadImage = ({ image, setImage, setImageToSave, setShowCamera }) => {
         overflow: "hidden",
         borderWidth: 1,
       }}
-      onPress={() => setShowCamera(true)}
+      onPress={() => showModal(true)}
     >
-      {image?.uri ? (
+      {!!image && image?.uri ? (
         <ImageBackground
           style={{ width: "100%", height: "100%" }}
           source={{ uri: image.uri }}

@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Modal, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  Modal,
+  Platform,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
 import UploadImage from "./components/UploadImage";
 import MyCamera from "./components/MyCamera";
@@ -13,16 +21,15 @@ import { Login } from "../../Types/requestTypes";
 import { StorageLogin } from "../../Types/storageTypes";
 import { useNavigation } from "@react-navigation/native";
 import { updatingLocation } from "../../useLogic/generalLogic";
+import Icon from "react-native-vector-icons/SimpleLineIcons";
+// import * as ImagePicker from "expo-image-picker";
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 
 const EditProfile = (route, nav) => {
-  console.log(route);
-
   const navigation = useNavigation();
 
   const [canEdit, setCanEdit] = useState(false);
 
-  const [showCamera, setShowCamera] = useState(false);
-  const [chosenImage, setChosenImage] = useState(null);
   const [image, setImage] = useState({});
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -62,33 +69,58 @@ const EditProfile = (route, nav) => {
       hobbies: hobbies,
     };
 
+    const createFormData = (photo) => {
+      const data = new FormData();
+
+      data.append("photo", {
+        name: photo.fileName,
+        type: photo.type,
+        uri:
+          Platform.OS === "ios" ? photo.uri.replace("file://", "") : photo.uri,
+      });
+
+      return data;
+    };
+
     const useProfile = await appManager.editProfile(userData);
-    console.log(useProfile);
+
+    const imageData = await appManager.saveImage(
+      createFormData(image),
+      phoneId,
+    );
+    console.log(imageData, "afjbasufbasufbauiobfuasbfuiabsfiuab");
+
     if (useProfile.error === 200) {
       updatingLocation();
       navigation.navigate("Home");
     } else {
       setCanEdit(true);
     }
+    setCanEdit(true);
   };
 
   useEffect(() => {
     const canEdit = async () => {
-      const data: StorageLogin = await isLoged();
+      try {
+        const data: StorageLogin = await isLoged();
 
-      const PhoneId = await deviceInfoModule.getAndroidId();
+        const PhoneId = await deviceInfoModule.getAndroidId();
 
-      if (data.username && data.password) {
-        const shouldLogin: Login = await appManager.login(
-          PhoneId,
-          data.username,
-          data.password,
-        );
+        if (data.username && data.password) {
+          const shouldLogin: Login = await appManager.login(
+            PhoneId,
+            data.username,
+            data.password,
+          );
 
-        if (shouldLogin.shouldLogin) setCanEdit(true);
+          if (shouldLogin.shouldLogin) setCanEdit(true);
+        }
+      } catch (err) {
+        console.log(err);
       }
     };
     canEdit();
+    return () => {};
   }, []);
 
   return canEdit ? (
@@ -101,12 +133,7 @@ const EditProfile = (route, nav) => {
         }}
       >
         <ScrollView style={{ width: "100%" }}>
-          <UploadImage
-            image={chosenImage}
-            setImage={setChosenImage}
-            setImageToSave={setImage}
-            setShowCamera={setShowCamera}
-          />
+          <UploadImage image={image} showModal={setModalVisible} />
 
           {inputsArray.map(({ type, label, onchange, id }) => (
             <EditProfileInputs
@@ -117,17 +144,14 @@ const EditProfile = (route, nav) => {
             />
           ))}
           <View style={{ flexDirection: "row" }}></View>
-          <Modal visible={isModalVisible} />
 
           <CustomButton label="Vytvořit profil" onPress={createProfile} />
-          <MyCamera
-            isActive={showCamera}
-            closeCamera={() => setShowCamera(false)}
-            setImage={setChosenImage}
-            setImageToSave={setImage}
-            image={image}
-          />
         </ScrollView>
+        <CameraModal
+          setImage={setImage}
+          setModalVisible={setModalVisible}
+          isModalVisible={isModalVisible}
+        />
       </View>
     </>
   ) : (
@@ -136,3 +160,95 @@ const EditProfile = (route, nav) => {
 };
 
 export default EditProfile;
+
+const CameraModal = ({ setImage, setModalVisible, isModalVisible }) => {
+  const getImage = async (type) => {
+    switch (type) {
+      case "galery":
+        const imageGalery = await launchImageLibrary({
+          maxWidth: 500,
+          maxHeight: 500,
+          mediaType: "photo",
+        });
+        if (!!imageGalery.assets) {
+          setImage(imageGalery.assets[0]);
+          setModalVisible(false);
+        }
+
+        return;
+      case "camera":
+        const imageCamera = await launchCamera({
+          mediaType: "photo",
+          saveToPhotos: true,
+          cameraType: "front",
+          maxHeight: 500,
+          maxWidth: 500,
+        });
+        if (!!imageCamera.assets) {
+          setImage(imageCamera.assets[0]);
+          setModalVisible(false);
+        }
+
+        return;
+    }
+  };
+
+  return (
+    <Modal transparent visible={isModalVisible}>
+      <View
+        style={{
+          backgroundColor: "rgba(0,0,0,0.4)",
+          width: "100%",
+          height: "100%",
+        }}
+      >
+        <View
+          style={{
+            width: "100%",
+            height: "20%",
+            backgroundColor: colors.backgroundMain,
+            position: "absolute",
+            bottom: 0,
+          }}
+        >
+          <View
+            style={{
+              justifyContent: "space-around",
+              alignItems: "center",
+              flexDirection: "row",
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => getImage("camera")}
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                borderWidth: 1,
+                width: 80,
+                height: 80,
+                borderRadius: 50,
+              }}
+            >
+              <Icon name="camera" size={50} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                borderWidth: 1,
+                width: 80,
+                height: 80,
+                borderRadius: 50,
+              }}
+              onPress={() => getImage("galery")}
+            >
+              <Icon name="folder-alt" size={50} />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+};

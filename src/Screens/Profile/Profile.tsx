@@ -15,6 +15,8 @@ import HobbiesAndLinks from "./components/HobbiesAndLinks";
 import appManager from "../../useLogic/apiCalls";
 import deviceInfoModule from "react-native-device-info";
 import { getAge } from "../../useLogic/generalLogic";
+import AsyncStorage from "@react-native-community/async-storage";
+import FastImage from "react-native-fast-image";
 
 const Profile = ({ navigation }) => {
   const [userData, setUserData] = useState<{
@@ -29,18 +31,22 @@ const Profile = ({ navigation }) => {
     description: string;
   }>(null);
 
-  const [isLoad, setLoad] = useState<boolean>(false);
-
+  const [isLoaded, setLoaded] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState("");
   useEffect(() => {
     const fetch = async () => {
       const phoneId = await deviceInfoModule.getAndroidId();
+      setImageUrl(`http://10.0.0.58:3001/getImage/${phoneId}`);
+      console.log();
+
       const data = await appManager.fetchUserDataByPhoneId(phoneId);
       setUserData(data);
-      setLoad(true);
+      setLoaded(true);
     };
     fetch();
     return () => {};
   }, []);
+  console.log(imageUrl);
 
   return (
     <ScrollView style={{ width: "100%" }}>
@@ -52,7 +58,7 @@ const Profile = ({ navigation }) => {
           alignItems: "center",
         }}
       >
-        {isLoad ? (
+        {isLoaded ? (
           <View
             style={{
               justifyContent: "center",
@@ -60,15 +66,22 @@ const Profile = ({ navigation }) => {
               backgroundColor: colors.backgroundMain,
             }}
           >
-            <Image
-              style={{
-                width: Dimensions.get("screen").width,
-                height: Dimensions.get("screen").height / 2,
-              }}
-              source={{
-                uri: appManager.images(),
-              }}
-            />
+            {imageUrl ? (
+              <FastImage
+                key={new Date().toString()}
+                style={{
+                  width: Dimensions.get("screen").width,
+                  height: Dimensions.get("screen").height / 2,
+                }}
+                source={{
+                  uri: imageUrl,
+                  cache: FastImage.cacheControl.web,
+                }}
+              />
+            ) : (
+              <ActivityIndicator />
+            )}
+
             <View
               style={{
                 backgroundColor: colors.backgroundMain,

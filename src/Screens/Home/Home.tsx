@@ -40,14 +40,14 @@ const Home = () => {
 
       const deviceInLocation = await appManager.findDevicesInLocation(phoneId); //+token
 
-      console.log(deviceInLocation);
-
       if (deviceInLocation?.error === 404) {
         showToast();
       }
+      console.log(deviceInLocation);
+
       setArrayOfIds(deviceInLocation);
       setDoneScanning(true);
-      +setScanning(false);
+      setScanning(false);
       setFirstScan(false);
     } catch (err) {
       console.log(err);
@@ -58,7 +58,7 @@ const Home = () => {
     <View style={fileStyles.container}>
       <View style={fileStyles.cardContainer}>
         {!isScanning
-          ? arrayOfIds?.error !== 404 &&
+          ? !!arrayOfIds &&
             arrayOfIds.map((item) => {
               return (
                 <ProfileCard

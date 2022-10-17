@@ -24,6 +24,8 @@ const WelcomeBackModal = () => {
       }
     };
     checkLoginAlways();
+
+    return () => setCheckingLogin(false);
   }, []);
 
   const checkLogin = async (savedUsername?: string, savedPassword?: string) => {

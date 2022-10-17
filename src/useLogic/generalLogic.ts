@@ -27,20 +27,17 @@ export const getAge = (birth: string): string => {
 };
 
 export const updatingLocation = async () => {
-  const phoneId = await deviceInfoModule.getAndroidId();
-
-  const currentLocation = await GetLocation.getCurrentPosition({
-    timeout: 15000,
-    enableHighAccuracy: true,
-  });
-
-  const update = await appManager.updateLocation({
-    phoneId: phoneId,
-    latitude: currentLocation.latitude,
-    longitude: currentLocation.longitude,
-  });
-
-  setTimeout(updatingLocation, 10000);
+  // const phoneId = await deviceInfoModule.getAndroidId();
+  // const currentLocation = await GetLocation.getCurrentPosition({
+  //   timeout: 15000,
+  //   enableHighAccuracy: true,
+  // });
+  // const update = await appManager.updateLocation({
+  //   phoneId: phoneId,
+  //   latitude: currentLocation.latitude,
+  //   longitude: currentLocation.longitude,
+  // });
+  // setTimeout(updatingLocation, 10000);
 };
 
 export const handleAppStateChange = async (e) => {

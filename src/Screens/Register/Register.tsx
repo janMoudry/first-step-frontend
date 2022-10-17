@@ -43,9 +43,8 @@ const Register = () => {
 
   const createLogin = async () => {
     setLoad(false);
-    const phoneId = deviceInfoModule.getAndroidId();
+    const phoneId = await deviceInfoModule.getAndroidId();
     const data = await appManager.register(phoneId, email, password);
-    console.log(data.data);
 
     if (data.error === 200) {
       await logIn(email, password, false);

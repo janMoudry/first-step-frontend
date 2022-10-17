@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ImageBackground, Text, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 import * as ImagePicker from "expo-image-picker";
@@ -38,18 +38,23 @@ const MyCamera = ({
     closeCamera();
     setImage(result);
     setImageToSave(result);
+
+    await ImagePicker.launchCameraAsync();
   };
 
   const takePhoto = async () => {
-    const takenPhoto = await camera.current.takePhoto({
-      qualityPrioritization: "balanced",
-    });
+    const takenPhoto =
+      camera.current &&
+      (await camera.current.takePhoto({
+        qualityPrioritization: "balanced",
+        flash: "auto",
+      }));
+
+    console.log(takenPhoto);
 
     setImage({ uri: `file://${takenPhoto.path}` });
-    // closeCamera();
     setImageToSave(takenPhoto);
     setLocalImage(true);
-    // closeCamera();
   };
 
   useEffect(() => {
@@ -115,15 +120,17 @@ const MyCamera = ({
               position: "absolute",
               alignSelf: "center",
               bottom: 10,
-              borderWidth: 1,
+              borderWidth: 5,
               borderColor: colors.backgroundMain,
               borderRadius: 50,
               padding: 8,
               backgroundColor: "rgba(0,0,0,0.5)",
+              width: 70,
+              height: 70,
             }}
             onPress={takePhoto}
           >
-            <Icon name="camera" size={40} color={"white"} />
+            {/* <Icon name="camera" size={40} color={"white"} /> */}
           </TouchableOpacity>
         </>
       ) : (

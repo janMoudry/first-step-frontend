@@ -1,23 +1,22 @@
 import { EditProfile } from "../Types/requestTypes";
-import useApiCall from "./useApiCall";
+import { useApiPost, useApiGet } from "./useApiCall";
 
 const appManager = {
   fetchUserDataByPhoneId: async (phoneId: string) => {
     const url = `/singleProfile`;
     const reqParams = { phoneId: phoneId };
-    const data = await useApiCall(url, reqParams);
-
-    return !!data ? data : null;
-  },
-  allPhoneIds: async () => {
-    const url = `/getPhoneIds`;
-    const data = await useApiCall(url, null);
+    const data = await useApiGet(url, reqParams);
 
     return !!data ? data : null;
   },
 
-  images: (): string => {
-    return `http://192.168.0.139:3001/image`;
+  images: async (phoneId) => {
+    const url = `/getImage`;
+    const reqParams = { phoneId: phoneId };
+
+    const data = await useApiGet(url, reqParams);
+
+    return data;
   },
   login: async (phoneId: string, email: string, password: string) => {
     const url = `/login`;
@@ -26,14 +25,14 @@ const appManager = {
       email: email,
       password: password,
     };
-    const data = await useApiCall(url, reqParams);
+    const data = await useApiGet(url, reqParams);
 
     return !!data ? data : null;
   },
   updateLocation: async (locationData) => {
     const url = `/updateLocation`;
     const reqParams = locationData;
-    const data = await useApiCall(url, reqParams);
+    const data = await useApiGet(url, reqParams);
     return data;
   },
   findDevicesInLocation: async (phoneId) => {
@@ -41,7 +40,7 @@ const appManager = {
     const reqParams = {
       phoneId: phoneId,
     };
-    const data = await useApiCall(url, reqParams);
+    const data = await useApiGet(url, reqParams);
     return data;
   },
   register: async (phoneId, email, password) => {
@@ -51,7 +50,7 @@ const appManager = {
       email: email,
       password: password,
     };
-    const data = await useApiCall(url, reqParams);
+    const data = await useApiGet(url, reqParams);
 
     return data;
   },
@@ -66,7 +65,15 @@ const appManager = {
   }) => {
     const url = `/editProfile`;
     const reqParams = userData;
-    const data = await useApiCall(url, reqParams);
+    const data = await useApiGet(url, reqParams);
+
+    return data;
+  },
+  saveImage: async (imageData, phoneId) => {
+    const url = `/saveImage/${phoneId}`;
+    const reqParams = imageData;
+
+    const data = await useApiPost(url, reqParams);
 
     return data;
   },

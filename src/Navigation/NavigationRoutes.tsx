@@ -8,6 +8,7 @@ const Stack = createNativeStackNavigator();
 
 import BottomTabs from "./BottomTabs";
 import { MainOption, SettingOption, ProfileOption } from "./navigationOption";
+import MyCamera from "../Screens/EditProfile/components/MyCamera";
 
 const NavigationRoutes = () => (
   <NavigationContainer>
@@ -41,6 +42,11 @@ const NavigationRoutes = () => (
         options={{ headerShown: false, gestureEnabled: false }}
         name="EditProfile"
         component={Screen.EditProfile}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Camera"
+        component={MyCamera}
       />
     </Stack.Navigator>
   </NavigationContainer>
